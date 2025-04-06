@@ -1,6 +1,6 @@
 import time
 import threading
-from DarkCustom.DarkCustom import DarkInput, DarkPrint, DarkConfirm, DarkProgressBar, DarkSpinner
+from DarkCustom.DarkCustom import DarkInput, DarkPrint, DarkConfirm, DarkProgressBar, DarkSpinner, DarkTable, DarkLog
 
 # Пример использования DarkInput
 print("Примеры использования DarkInput:")
@@ -70,3 +70,31 @@ time.sleep(2)  # Имитация выполнения задачи
 
 spinner_thread.join()
 DarkPrint("Задача завершена!", rgb_values=(0, 255, 0))
+
+# Пример использования DarkTable
+print("\nПримеры использования DarkTable:")
+
+# Данные для таблицы
+table_data = [
+    ["Имя", "Возраст", "Город"],
+    ["Иван", 30, "Москва"],
+    ["Мария", 25, "Санкт-Петербург"],
+    ["Петр", 35, "Казань"],
+    ["Анна", 28, "Новосибирск"],
+]
+
+# Вывод таблицы
+DarkTable(table_data, header_rgb=(255, 100, 0), row_rgb=(200, 200, 200), separator_rgb=(150, 150, 150))
+
+# Пример использования DarkLog
+print("\nПримеры использования DarkLog:")
+
+# Логирование разных уровней
+DarkLog("Это информационное сообщение.", level="info", rgb_values=(0, 255, 0))
+DarkLog("Это предупреждение!", level="warning", rgb_values=(255, 255, 0))
+DarkLog("Произошла ошибка!", level="error", rgb_values=(255, 0, 0))
+DarkLog("Отладочное сообщение.", level="debug", rgb_values=(0, 0, 255))
+
+# Логирование в файл
+DarkLog("Сообщение, которое будет записано в файл.", level="info", rgb_values=(0, 255, 0), log_file="dark_log.txt")
+DarkLog("Еще одно сообщение в файл.", level="warning", rgb_values=(255, 255, 0), log_file="dark_log.txt")
