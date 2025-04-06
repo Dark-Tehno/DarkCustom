@@ -1,6 +1,8 @@
 import getpass
 import time
 import itertools
+import os
+import datetime
 
 def DarkInput(
     prompt: str = "",
@@ -185,3 +187,85 @@ def DarkSpinner(rgb_spinner=(255, 255, 255), delay=0.1):
         time.sleep(delay)
         print("\033[0m", end="")
         yield
+
+def DarkTable(data, header_rgb=(255, 100, 0), row_rgb=(200,200,200), separator_rgb=(150,150,150)):
+    """
+    Отображает таблицу с заданными цветами.
+
+    Args:
+        data: Данные для отображения в виде списка списков.
+        header_rgb: Цвет заголовка в формате RGB.
+        row_rgb: Цвет строк в формате RGB.
+        separator_rgb: Цвет разделителей в формате RGB.
+    """
+    if not data:
+        return
+
+    color_header = ""
+    color_row = ""
+    color_separator = ""
+
+    if header_rgb != (255, 255, 255):
+        color_header = f"\033[38;2;{header_rgb[0]};{header_rgb[1]};{header_rgb[2]}m"
+    if row_rgb != (255, 255, 255):
+        color_row = f"\033[38;2;{row_rgb[0]};{row_rgb[1]};{row_rgb[2]}m"
+    if separator_rgb != (255, 255, 255):
+        color_separator = f"\033[38;2;{separator_rgb[0]};{separator_rgb[1]};{separator_rgb[2]}m"
+
+    column_widths = [0] * len(data[0])
+    for row in data:
+        for i, cell in enumerate(row):
+            column_widths[i] = max(column_widths[i], len(str(cell)))
+
+    print(color_separator + "┌" + "┬".join(["─" * (width + 2) for width in column_widths]) + "┐")
+    print(color_separator + "│", end="")
+    for i, header in enumerate(data[0]):
+        print(f" {color_header}{header:<{column_widths[i]}} {color_separator}│", end="")
+    print()
+    print(color_separator + "├" + "┼".join(["─" * (width + 2) for width in column_widths]) + "┤")
+
+    for row_index, row in enumerate(data[1:]):
+        print(color_separator + "│", end="")
+        for i, cell in enumerate(row):
+            print(f" {color_row}{str(cell):<{column_widths[i]}} {color_separator}│", end="")
+        print()
+        if row_index < len(data[1:]) - 1:
+            print(color_separator + "├" + "┼".join(["─" * (width + 2) for width in column_widths]) + "┤")
+
+    print(color_separator + "└" + "┴".join(["─" * (width + 2) for width in column_widths]) + "┘")
+    print("\033[0m", end="")
+
+def DarkLog(text, level="info", rgb_values=(0, 255, 0), log_file=None):
+    """
+    Выводит лог с заданными цветами и возможностью записи в файл.
+
+    Args:
+        text: Текст лога.
+        level: Уровень лога (info, warning, error, debug).
+        rgb_values: Цвет текста в формате RGB.
+        log_file: Путь к файлу для записи логов (по умолчанию None - не записывать в файл).
+    """
+    color_values = ""
+    if rgb_values != (255, 255, 255):
+        color_values = f"\033[38;2;{rgb_values[0]};{rgb_values[1]};{rgb_values[2]}m"
+
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_message = f"[{current_time}] [{level.upper()}] {text}"
+
+    if level == "info":
+        print(f"{color_values}{log_message}\033[0m")
+    elif level == "warning":
+        print(f"{color_values}{log_message}\033[0m")
+    elif level == "error":
+        print(f"{color_values}{log_message}\033[0m")
+    elif level == "debug":
+        print(f"{color_values}{log_message}\033[0m")
+    else:
+        print(f"{color_values}{log_message}\033[0m")
+
+    if log_file:
+        try:
+            with open(log_file, "a", encoding="utf-8") as f:
+                f.write(log_message + "\n")
+        except Exception as e:
+            print(f"Error writing to log file: {e}")
